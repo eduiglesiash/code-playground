@@ -1,0 +1,85 @@
+*{
+  box-sizing: border-box;
+}
+
+*::before, *::after {
+  box-sizing: inherit;
+}
+
+body {
+  background-color: #f1f1f1;
+  color: #333;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 16px;
+  line-height: 1.4;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+}
+
+section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  height: 100vh;
+}
+
+#iframe {
+  border: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: white;
+}
+
+/*  Split Style */
+
+.grid {
+  display: grid;
+  grid-template-rows: 1fr 2.5px 1fr;
+  grid-template-columns: 1fr 2.5px 1fr;
+  height: 100vh;
+}
+
+.vertical-gutter {
+  cursor: col-resize;
+  grid-area: 1 / 2 / 4 / 2;
+  border: 1px solid white;
+}
+
+.horizontal-gutter {
+  cursor: row-resize;
+  grid-area: 2 / 1 / 2 / 2;
+  border: 1px solid white;
+}
+
+
+textarea {
+  background-color: #333;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  color: #fff;
+  font-family: monospace;
+  font-size: 24px;
+  padding: 16px;
+  box-shadow: 0 0 0 .1px rgba(255,255,255,.2);
+  background-repeat: no-repeat;
+  background-size: 36px;
+  background-position: calc(100% - 30px) calc(100% - 30px)
+}
+textarea:focus {
+  outline: 0;
+}
+
+#js{
+  background-image: url('/assets/js.svg');
+}
+#html {
+  background-image: url('/assets/html5.svg');
+}
+#css{
+  background-image: url('/assets/css3.svg');
+}

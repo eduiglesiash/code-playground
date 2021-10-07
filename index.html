@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Code Playground</title>
+  </head>
+  <body>
+    <main class="grid">
+      <div>
+        <textarea
+          placeholder="html"
+          name="html"
+          id="html"
+          cols="30"
+          rows="10"
+        ></textarea>
+      </div>
+      <div>
+        <textarea
+          placeholder="css"
+          name="css"
+          id="css"
+          cols="30"
+          rows="10"
+        ></textarea>
+      </div>
+      <div>
+        <iframe id="iframe" srcdoc="<h1>Hola Mundo</h1>"></iframe>
+      </div>
+      <div>
+        <textarea
+          placeholder="js"
+          name="js"
+          id="js"
+          cols="30"
+          rows="10"
+        ></textarea>
+      </div>
+      <div class="vertical-gutter"></div>
+      <div class="horizontal-gutter"></div>
+    </main>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
