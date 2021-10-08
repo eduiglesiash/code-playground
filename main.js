@@ -1,13 +1,43 @@
 import './style.css'
 import Split from 'split-grid'
 import { decode, encode } from 'js-base64'
+import * as monaco from 'monaco-editor'
+import HtmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
+
+
+window.MonacoEnvironment = {
+  getWorker(_, label) {
+    if (label === 'html') {
+      return new HtmlWorker()
+    }
+  }
+}
+
+
 
 const getElem = selector => document.querySelector(selector);
 
+
+const { pathname } = window.location
 const $html = getElem('#html');
 const $js = getElem('#js');
 const $css = getElem('#css');
 const $iframe = getElem('#iframe');
+
+const [htmlRaw, cssRaw, jsRaw] = pathname.slice(1).split('&')
+const html = decode(htmlRaw);
+const css = decode(cssRaw);
+const js = decode(jsRaw);
+
+const htmlEditor = monaco.editor.create($html, {
+  value: html,
+  fontSize: '18',
+  language: 'html',
+  theme: 'vs-dark'
+})
+
+const htmlForPreview = createHTML({html, css, js});
+$iframe.setAttribute('srcdoc', htmlForPreview)
 
 Split({
   columnGutters: [{
@@ -20,38 +50,18 @@ Split({
   }]
 })
 
-const init = () => {
-  const {pathname} = window.location
-  const [html, css, js] = pathname.slice(1).split('&')
-
-  if (html | css | js) {
-    $html.value = decode(html);
-    $css.value = decode(css);
-    $js.value = decode(js);
-  
-    const htmlForPreview = createHTML();
-    $iframe.setAttribute('srcdoc', htmlForPreview)
-  }
-  
-}
-
-const udpate = () => {
-  const html = $html.value;
+const update = () => {
+  const html = htmlEditor.getValue()
   const js = $js.value;
   const css = $css.value;
   const hashCode = `${encode(html)}&${encode(css)}&${encode(js)}`
-  const htmlForPreview = createHTML();
+  const htmlForPreview = createHTML({html, css, js});
 
   window.history.replaceState(null, null, `/${hashCode}`)
   $iframe.setAttribute('srcdoc', htmlForPreview)
 }
 
-const createHTML = () => {
-
-  const html = $html.value;
-  const css = $css.value;
-  const js = $js.value;
-
+function createHTML({html, css, js}) {
   return `
   <!DOCTYPE html>
   <html lang="es">
@@ -91,8 +101,7 @@ const createHTML = () => {
   `
 }
 
-init()
-
-$html.addEventListener('input', udpate)
-$css.addEventListener('input', udpate)
-$js.addEventListener('input', udpate)
+//$html.addEventListener('input', udpate)
+htmlEditor.onDidChangeModelContent(update)
+$css.addEventListener('input', update)
+$js.addEventListener('input', update)
