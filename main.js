@@ -2,42 +2,59 @@ import './style.css'
 import Split from 'split-grid'
 import { decode, encode } from 'js-base64'
 import * as monaco from 'monaco-editor'
+import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import HtmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
+import CssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
+import TsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 
 
 window.MonacoEnvironment = {
   getWorker(_, label) {
-    if (label === 'html') {
-      return new HtmlWorker()
-    }
+    if (label === 'html') return new HtmlWorker();
+    if (label === 'css') return new CssWorker();
+    if (label === 'javascript') return new TsWorker();
+    return new EditorWorker()
   }
 }
 
-
+const COMMON_EDITOR_OPTIONS = {
+  fontSize: '18',
+  theme: 'vs-dark',
+  automaticLayout: true
+}
 
 const getElem = selector => document.querySelector(selector);
-
-
-const { pathname } = window.location
 const $html = getElem('#html');
 const $js = getElem('#js');
 const $css = getElem('#css');
 const $iframe = getElem('#iframe');
 
+const { pathname } = window.location
 const [htmlRaw, cssRaw, jsRaw] = pathname.slice(1).split('&')
-const html = decode(htmlRaw);
-const css = decode(cssRaw);
-const js = decode(jsRaw);
+
+const html = htmlRaw ? decode(htmlRaw) : '';
+const css = cssRaw ? decode(cssRaw) : '';
+const js = jsRaw ? decode(jsRaw) : '';
 
 const htmlEditor = monaco.editor.create($html, {
   value: html,
-  fontSize: '18',
   language: 'html',
-  theme: 'vs-dark'
+  ...COMMON_EDITOR_OPTIONS
+})
+const cssEditor = monaco.editor.create($css, {
+  value: css,
+  language: 'css',
+  ...COMMON_EDITOR_OPTIONS
+})
+const tsEditor = monaco.editor.create($js, {
+  value: js,
+  language: 'javascript',
+  ...COMMON_EDITOR_OPTIONS
 })
 
-const htmlForPreview = createHTML({html, css, js});
+const htmlForPreview = createHTML({ html, css, js });
 $iframe.setAttribute('srcdoc', htmlForPreview)
+
 
 Split({
   columnGutters: [{
@@ -52,16 +69,16 @@ Split({
 
 const update = () => {
   const html = htmlEditor.getValue()
-  const js = $js.value;
-  const css = $css.value;
+  const js = tsEditor.getValue()
+  const css = cssEditor.getValue();
   const hashCode = `${encode(html)}&${encode(css)}&${encode(js)}`
-  const htmlForPreview = createHTML({html, css, js});
+  const htmlForPreview = createHTML({ html, css, js });
 
   window.history.replaceState(null, null, `/${hashCode}`)
   $iframe.setAttribute('srcdoc', htmlForPreview)
 }
 
-function createHTML({html, css, js}) {
+function createHTML({ html, css, js }) {
   return `
   <!DOCTYPE html>
   <html lang="es">
@@ -101,7 +118,9 @@ function createHTML({html, css, js}) {
   `
 }
 
-//$html.addEventListener('input', udpate)
+// $html.addEventListener('input', udpate)
+// $css.addEventListener('input', update)
+// $js.addEventListener('input', update)
 htmlEditor.onDidChangeModelContent(update)
-$css.addEventListener('input', update)
-$js.addEventListener('input', update)
+cssEditor.onDidChangeModelContent(update)
+tsEditor.onDidChangeModelContent(update)

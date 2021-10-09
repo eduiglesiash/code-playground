@@ -18,6 +18,7 @@ body {
   padding: 0;
   height: 100vh;
   width: 100vw;
+  overflow: hidden;
 }
 
 section {
@@ -55,28 +56,6 @@ section {
   border: 1px solid white;
 }
 
-
-textarea {
-  background-color: #333;
-  width: 100%;
-  height: 100%;
-  border: 0;
-  color: #fff;
-  font-family: monospace;
-  font-size: 24px;
-  padding: 16px;
-  box-shadow: 0 0 0 .1px rgba(255,255,255,.2);
-  background-repeat: no-repeat;
-  background-size: 36px;
-  background-position: calc(100% - 30px) calc(100% - 30px)
-}
-textarea:focus {
-  outline: 0;
-}
-
-#js{
-  background-image: url('/assets/js.svg');
-}
 .editor:after {
   display: block;
   width: 50px;
@@ -87,16 +66,19 @@ textarea:focus {
   bottom: 16px;
   z-index: 1;
   background-repeat: no-repeat;
+  padding: 16px;
 }
-#html{
+#html, #css, #js{
   position: relative;
 }
 #html:after{
   background-image: url('/assets/html5.svg');
 }
-
-#css{
+#css:after{
   background-image: url('/assets/css3.svg');
+}
+#js:after{
+  background-image: url('/assets/js.svg');
 }
 
 /* monaco editor override */
